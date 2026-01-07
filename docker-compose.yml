@@ -1,0 +1,10 @@
+services:
+  finance:
+    build: .
+    container_name: finance-tracker
+    ports:
+      - "8080:80"
+    volumes:
+      - ./json_data:/app/json_data
+    restart: always
+
