@@ -29,7 +29,7 @@ def calc_demo_score(data: dict) -> int:
     """
     # If there's an error, show a low score to highlight the issue
     if "error" in data:
-        return 10
+        return 20
 
     income = float(data.get("income", 0) or 0)
     credit = float(data.get("credit_total", 0) or 0)
