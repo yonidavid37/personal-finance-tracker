@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Personal Finance Tracker</title>
+
+  <style>
+    :root{
+      --bg:#0b1020;
+      --card:#0f172a;
+      --card2:#0b1226;
+      --text:#e5e7eb;
+      --muted:#94a3b8;
+      --border: rgba(148,163,184,.18);
+      --shadow: 0 18px 50px rgba(0,0,0,.35);
+
+      --green:#22c55e;
+      --blue:#60a5fa;
+      --orange:#f59e0b;
+      --red:#ef4444;
+    }
+
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: Arial, sans-serif;
+      background:
+        radial-gradient(1200px 700px at 20% 10%, rgba(96,165,250,.20), transparent 55%),
+        radial-gradient(900px 600px at 80% 20%, rgba(34,197,94,.18), transparent 60%),
+        var(--bg);
+      color:var(--text);
+      padding:28px;
+    }
+
+    .wrap{max-width:1200px; margin:0 auto;}
+    .header{
+      display:flex; align-items:center; gap:12px;
+      margin-bottom:18px;
+    }
+    .title{
+      font-size:34px; font-weight:800; margin:0;
+      letter-spacing:.2px;
+    }
+    .subtitle{
+      color:var(--muted); font-size:13px; margin-top:6px;
+    }
+
+    .section{
+      background: linear-gradient(180deg, rgba(15,23,42,.88), rgba(11,18,38,.92));
+      border:1px solid var(--border);
+      border-radius:18px;
+      box-shadow: var(--shadow);
+      padding:18px;
+      margin-bottom:16px;
+    }
+
+    .section h2{
+      margin:0 0 14px;
+      font-size:18px;
+      font-weight:800;
+      display:flex;
+      align-items:center;
+      gap:10px;
+    }
+
+    /* KPI cards (top 3) */
+    .kpis{
+      display:grid;
+      grid-template-columns: repeat(3, minmax(220px, 1fr));
+      gap:14px;
+    }
+
+    /* All cards grid */
+    .grid{
+      display:grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap:14px;
+    }
+
+    .card{
+      background: rgba(2,6,23,.55);
+      border:1px solid var(--border);
+      border-radius:16px;
+      padding:14px 14px 12px;
+      box-shadow: 0 10px 30px rgba(0,0,0,.22);
+      min-height: 92px;
+    }
+
+    .label{
+      color:var(--muted);
+      font-size:13px;
+      margin-bottom:8px;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+
+    .value{
+      font-size:26px;
+      font-weight:900;
+      direction:ltr; /* numbers nicer */
+      text-align:right;
+    }
+
+    .badge{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:8px 10px;
+      border:1px solid var(--border);
+      background: rgba(15,23,42,.55);
+      border-radius:999px;
+      color:var(--muted);
+      font-size:12px;
+      margin-top:10px;
+    }
+
+    /* Color helpers */
+    .green{ color: var(--green); }
+    .blue{ color: var(--blue); }
+    .orange{ color: var(--orange); }
+    .red{ color: var(--red); }
+
+    @media (max-width: 900px){
+      .kpis{ grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+
+    <div class="header">
+      <div style="font-size:34px;">📊</div>
+      <div>
+        <h1 class="title">Personal Finance Tracker</h1>
+        <div class="subtitle">עודכן לאחרונה: {{ updated_at }}</div>
+      </div>
+    </div>
+
+    <!-- Top KPIs -->
+    <div class="section">
+      <div class="kpis">
+        <div class="card">
+          <div class="label">הכנסה חודשית</div>
+          <div class="value green">₪ {{ finance_data.income }}</div>
+        </div>
+
+        <div class="card">
+          <div class="label">חוב כולל</div>
+          <div class="value orange">₪ {{ totals.total_debt }}</div>
+        </div>
+
+        <div class="card">
+          <div class="label">יתרה נטו חודשית</div>
+          <div class="value blue">₪ {{ totals.net_monthly }}</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- All data as "windows/cards" -->
+    <div class="section">
+      <h2>📋 כל הנתונים (כרטיסים)</h2>
+
+      <div class="grid">
+        {% for key, value in finance_data.items() %}
+          <div class="card">
+            <div class="label">{{ key }}</div>
+
+            {# אם זה מספר - נציג יפה, אם זה טקסט נציג רגיל #}
+            {% if value is number %}
+              <div class="value">{{ value }}</div>
+            {% else %}
+              <div class="value" style="font-size:18px; font-weight:700; direction:rtl; text-align:right;">
+                {{ value }}
+              </div>
+            {% endif %}
+          </div>
+        {% endfor %}
+      </div>
+
+      <div class="badge">💡 טיפ: כל שדה חדש שתוסיף ל־finance_data יופיע אוטומטית כאן</div>
+    </div>
+
+  </div>
+</body>
+</html>
+
