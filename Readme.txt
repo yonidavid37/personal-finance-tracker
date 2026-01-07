@@ -1,6 +1,7 @@
 # Personal Finance Tracker -- Kubernetes Deployment (v1.1)
 
 A simple Flask application that loads financial data from a JSON file
+UI refreshed using templates and basic styling.
 
 
 ## Prerequisites
