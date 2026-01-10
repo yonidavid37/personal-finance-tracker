@@ -11,21 +11,21 @@ pipeline {
         stage('Build') {
             steps {
                 echo 'Building Docker image'
-                sh 'docker build -t personal-finance-tracker:ci .'
+                bat 'docker build -t personal-finance-tracker:ci .'
             }
         }
 
         stage('Test') {
             steps {
                 echo 'Running basic test'
-                sh 'python3 --version'
+                bat 'python --version'
             }
         }
 
         stage('Deploy') {
             steps {
                 echo 'Deploy stage (demo)'
-                sh 'echo Deploy completed'
+                bat 'echo Deploy completed'
             }
         }
     }
