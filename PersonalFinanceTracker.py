@@ -1,7 +1,7 @@
 from flask import Flask, render_template, jsonify
 from datetime import datetime
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder="templates", static_folder="static")
 
 # ===== נתונים פיננסיים (כרגע סטטיים) =====
 finance_data = {
