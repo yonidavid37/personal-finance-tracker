@@ -1,67 +1,60 @@
 pipeline {
   agent any
 
-  options {
-    timestamps()
-  }
-
   environment {
-    IMAGE_NAME = "personal-finance-tracker"
-    IMAGE_TAG  = "ci"
+    IMAGE_NAME = "personal-finance-tracker:ci"
+    // Change this if your manifests are in a different folder:
+    MANIFEST_DIR = "K8S"
+    // If your deployment name/service name differ, adjust:
+    DEPLOYMENT_NAME = "pft-finance-tracker"
   }
 
   stages {
-
     stage('Checkout') {
-      steps {
-        checkout scm
-      }
+      steps { checkout scm }
     }
 
     stage('Build') {
       steps {
         echo "Building Docker image..."
-        bat "docker --version"
-        bat "docker build -t %IMAGE_NAME%:%IMAGE_TAG% ."
+        bat 'docker --version'
+        bat "docker build -t %IMAGE_NAME% ."
       }
     }
 
     stage('Test') {
       steps {
         echo "Running basic tests..."
-        // If Python is installed on the Jenkins Windows machine:
-        bat "python --version"
-
-        // Quick sanity check: build should include the python file
-        bat "dir"
-
-        // Optional: run container quickly to verify it starts (won't fail pipeline if stops)
-        // If your app listens on 80 inside the container:
-        bat "docker run --rm %IMAGE_NAME%:%IMAGE_TAG% python -c \"import json; print('OK')\""
+        bat 'python --version'
+        // simple container sanity check
+        bat 'docker run --rm %IMAGE_NAME% python -c "print(\'OK\')"'
       }
     }
 
-    stage('Deploy') {
+    stage('Deploy to Minikube') {
       steps {
-        echo "Deploy stage (demo)..."
-        // Demo deploy: just show image exists
-        bat "docker images | findstr %IMAGE_NAME%"
-        bat "echo Deploy completed"
+        echo "Deploying to Minikube..."
+        bat 'kubectl version --client'
+        bat 'minikube status'
+
+        // Make the locally-built image available inside Minikube
+        bat "minikube image load %IMAGE_NAME%"
+
+        // Apply Kubernetes manifests
+        bat "kubectl apply -f %MANIFEST_DIR%"
+
+        // Wait for rollout
+        bat "kubectl rollout status deployment/%DEPLOYMENT_NAME% --timeout=180s"
+
+        // Show what is running
+        bat "kubectl get pods,svc"
       }
     }
   }
 
   post {
     always {
-      echo "Cleaning up dangling images (optional)..."
-      // Don't fail pipeline if cleanup finds nothing
-      bat "docker image prune -f || exit /b 0"
-    }
-    success {
-      echo "✅ Pipeline finished successfully"
-    }
-    failure {
-      echo "❌ Pipeline failed - check Console Output"
+      echo "Pipeline finished"
     }
   }
 }

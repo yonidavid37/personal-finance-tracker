@@ -10,23 +10,24 @@ Before deploying, ensure the following are installed:
 
  -   Minikube
  -   Kubectl
- -   Helm
+ -   Docker
 
 
-## How to Run the Application (Helm + Kubernetes)
+## How to Run the Application 
 
 ### 1. Start Minikube
 
     minikube start
 
-### 2. Deploy the application using Helm
 
-(From the folder containing the `finance-tracker/` chart)
+### 2. Deploy the application using Kubernetes
 
-    helm upgrade --install finance-tracker ./finance-tracker
+   kubectl apply -f finance-tracker/templates/
+
 
 ### 3. Get the external URL to access the app
 
-    minikube service finance-tracker --url
+   minikube service pft-finance-tracker --url
+ 
 
 Open the returned URL in your browser to view the application.
