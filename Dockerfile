@@ -7,11 +7,10 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY PersonalFinanceTracker.py .
 COPY finance-tracker/ ./finance-tracker/
-
-COPY templates/ ./templates/
-COPY static/ ./static/
+COPY templates/ ./templates/   
 
 EXPOSE 80
 
 CMD ["python", "PersonalFinanceTracker.py"]
+
 
